@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>Blood Bank Details</title>
+		<meta name="generator" content="Bootply" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/styles.css" rel="stylesheet">
+	</head>
+	<body>
+<!--main-->
+<div class="container" id="main">
+   <div class="row">
+	<div class="col-md-4 col-sm-6">		
+    </div>
+   <div class="col-md-4 col-sm-6">
+		 <ol class="breadcrumb">
+			  <li><a href="index.html">Home</a></li>
+			  <li class="active">Blood Banks</li>
+		 </ol>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+			  <select id="states" style="width: 100%;"></select>			  
+			  <select id="districts" style="width: 100%; margin-top: 5px;"></select>
+			  <h4>Blood Banks</h4>
+		  </div>
+   			<div class="panel-body">
+              <div class="list-group" id="blood-banks">
+              </div>
+            </div>
+            <input type='hidden' id="page" value="0" />
+            <a class="btn btn-block btn-success" id="more" >More</a>
+   		</div>
+    </div>
+  	<div class="col-md-4 col-sm-6">         
+    </div>
+  </div><!--/row-->
+  
+  <hr> 
+</div><!--/main-->
+<!-- script references -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<script src="js/scripts.js"></script>
+		<script type="text/javascript">
+			var states = ["Andaman and Nicobar Islands","Andhra Pradesh","Arunachal Pradesh","Assam","Bihar","Chhattisgarh",
+					      "Karnataka","Kerala","Lakshdweep","Madhya Pradesh","Maharashtra","Manipur","Meghalaya","Mizoram","Nagaland",
+					      "Odisha","Puducherry","Punjab","Rajasthan","Sikkim","Tamil Nadu","Telangana","Tripura","Uttar Pradesh",
+					      "Uttarakhand","West Bengal"];
+		    var	districts = {"Andaman and Nicobar Islands":["Port Blair"],
+				             "Andhra Pradesh":["Anantapur","Chittoor","Cuddapah","East Godavari","East Godavari district","Guntur","Kadapa","Krishna","Kurnool","Nellore","Prakasam","S.P.S.R Nellore","Srikakulam","Vijayawada","Villupuram","Visakhapatnam","Vizianagaram","West Godavari"],
+				             "Arunachal Pradesh":["Bomdiala","Changlang","East Siang","Itanagar","Lower Subansiri","Naharlagun","Seppa","Tawang","Tezu","Upper Siang","Upper Subansiri","West Along"],
+				             "Assam":["Barpeta","Bongaigaon","Cachar","Chapaguri","Darrang","Dhemaji","Dhubri","Dibrugarh","Dima-Hasao","Goalpara","Golaghat","Guwahati","Hailakandi","Jorhat","Kamrup","Kamrup (M)","Karbi Anglong","Karimganj","Keonjhar","Kokrajhar","Lakhimpur","Marghetia","Morigaon","Nagaon","Nalbari","Silchar","Sivasagar","Sivsagar","Sonitpur","Tezpur","Tinsukia"],
+				             "Bihar":["Aurangabad","Begusarai","Bhagalpur","Bhojpur","Buxar","Chapra","Darbhanga","East Champaran","Gaya","Gopalganj","Hajipur","Jamui","Jehanabad","Kaimur","Katihar","Khagaria","Kishanganj","Laheriasarai","Lakhisarai","Madhepura","Madhubani","Munger","Muzaffarpur","Nalanda","Nawada","Patna","Rohtas","Saharsa","Samastipur","Sasaram","Sheikhpura","Sitamarhi","Siwan","Supaul","Umanagar"],
+				             "Chhattisgarh":[],
+				             "Karnataka":["Bagalkot","Bangalore","Bangalore Rural","Belgaum","Bellary","Bengaluru","Bijapur","Chamarajanagar","Chikkaballapur","Chitradurga","Dakshina Kannada","Davangere","Dharwad","Gadag","Gulbarga","Haveri","Hubli","Kalaburagi","Kodagu","Kolar","Koppal","Mandya","Mangalore","Mysore","North Kanara","Raichur","Shimoga","Sringeri","Tumkur","Udupi","Uttara Kannada"],
+				             "Kerala":["Alappuzha","Allapuzha","Ernakulam","Idduki","Idukki","Kannur","Kasaragod","Kollam","Kottayam","Kozhikode","Malappuram","Palakkad","Pathanamthitta","Pathananthitta","Thiruvananthapuram","Thrissur","Wayanad"],
+				             "Lakshdweep":["Kavaratti island"],
+				             "Madhya Pradesh":["Alirajpur","Ashoknagar","Balaghat","Barwani","Betul","Bhind","Bhopal","Burhanpur","Chhatarpur","Chhindwara","Damoh","Datia","Dewas","Dhar","Dindori","Guna","Gwalior","Harda","Hoshangabad","Indore","Jabalpur","Jhabua","Katni","Khandwa","Khandwa(East Nimar)","Khargone (West Nimar)","Mandla","Mandsaur","Morena","Narsinghpur","Neemuch","Panna","Raisen","Rajgarh","Ratlam","Rewa","Sagar","Satna","Sehore","Seoni","Shahdol","Shajapur","Sheopur","Shivpuri","Sidhi","Singrauli","Suhagpur","Tikamgarh","Ujjain","Umaria","Vidisha"],
+				             "Maharashtra":["Ahmednagar","Akola","Amravati","Aurangabad","Bandera","Beed","Buldhana","Chandrapur","Dhule","Gadchiroli","Gondia","Hingoli","Jalgaon","Jalna","Kolhapur","Latur","Mumbai","Nagpur","Nanded","Nandurbar","Nashik","Osmanabad","Parbhani","Pune","Raigad","Ratnagiri","Sangli","Satara","Sindhudurga","Solapur","Thane","Wardha","Washim","Yavatmal"],
+				             "Manipur":["Churachandpur","Imphal","Imphal East","Imphal West","Thoubal"],
+				             "Meghalaya":["East Khasi Hills","East Khasi Hills District","Shillong","West Garo Hills","West Jaintia Hills"],
+				             "Mizoram":["Aizawl","Champhai","Kolasib","Lawngtlai","Lunglei","Mamit","Saiha","Serchhip"],
+				             "Nagaland":["Dimapur","Kohima","Mokokchung","Phek","Tuensang","Wokha","Zunheboto"],
+				             "Odisha":["Angul","Balasore","Baragarh","Bargarh","Bhadrak","Bhubaneswar","Bolangir","Boudh","Cuttack","Debagarh","Dhenkanal","Gajapati","Ganjam","Jagatsinghpur","Jajpur","Jharsuguda","Kalahandi","Kandhamal","Kendrapara","Kendujhar","Khurda","Koraput","Malkangiri","Mayurbhanj","Nawarangpur","Nayagarh","Nowrangpur","Nuapada","Puri","Rayagada","Sambalpur","Sonepur","Sundargarh","Sundergarh"],
+				             "Puducherry":["Karaikal","Mahe","Yanam"],
+				             "Punjab":["Amritsar","Bathinda","Bhatinda","Faridkot","Fatehgarh Sahib","Fazilka","Ferozpur","Gurdaspur","Hoshiarpur","Jalandhar","Kapurthala","Ludhiana","Mansa","Moga","Mohali","Muktsar","Nawanshahr","Pathankot","Patiala","Ropar","Sangrur","Tarn Taran"],
+				             "Rajasthan":["Ajmer","Alwar","Banswara","Baran","Barmer","Bharatpur","Bhilwara","Bhilwari","Bikaner","Bundi","Chittaurgarh","Chittorgarh","Churu","Dausa","Dholpur","Dungarpur","Hanumangarh","Jaipur","Jaisalmer","Jalore","Jhalawar","Jhunjhunu","Jodhpur","Karauli","Kota","Mount Abu","Nagaur","Pali","Pilani","Pratapgarh","Rajsamand","Sawai Madhopur","Sawaimadhopur","Sikar","Sirohi","Sriganganagar","Tonk","Udaipur"],
+				             "Sikkim":["East Sikkim","South Sikkim"],
+				             "Tamil Nadu":["Ambur","Chennai","Coimbatore","Cuddalore","Dharmapuri","Dindigul","Erode","Gopichettipalayam","Kallakurichi","Kanchipuram","Kanyakumari","Karaikudi","Karur","Krishnagiri","Kumbakonam","Madurai","Nagapattinam","Namakkal","Nilgiris","Pattukottai","Perambalur","Pudukkottai","Pudukottai","Ramanathapuram","Salem","Sankarankovil","Sivaganga","Sivagangai","Thanajvur","Thanjavur","The Nilgiris","Theni","Thiruvallur","Thoothukudi","Tiruchirappalli","Tirunelveli","Tirupathur","Tiruppur","Tiruvallur","Tiruvannamalai","Tiruvarur","Vellore","Villupuram","Virudhunagar"],
+				             "Telangana":["Adilabad","Hyderabad","Karimnagar","Khamam","Khammam","Mahaboobnagar","Medak","Nalgonda","Nizamabad","Ranga Reddy","Secunderabad","Tarnaka","Warangal"],
+				             "Tripura":["Agartala","Dhalai","Dharmanagar","Gomti","Unakoti","West Tripura"],
+				             "Uttar Pradesh":["Agra","Aligarh","Allahabad","Allahabad.","Ambedkar Nagar","Ambedkarnagar","Amroha","Auriya","Azamgarh","Badaun","Baghpat","Baharaich","Bahraich","Ballia","Balrampur","Banaras","Banda","Barabanki","Bareilly","Basti","Bijnor","Bulandshahar","Chandauli","Chitrakoot","Deoria","Etah","Etawah","Faizabad","Farrukhabad","Fatehpur","Ferozabad","Firozabad","Frukhabad","Gautam Budh Nagar","Gautam budh nagar","Gautambudh Nagar","Ghaziabad","Ghaziabad.","Ghazipur","Gonda","Gorakhpur","Hamirpur","Hapur","Hardoi","Jalaun","Jaunpur","Jhansi","Jyotiba Phule Nagar","Kannauj","Kanpur","Kanshi Ram Nagar","Kaushambi","Kushinagar","Lakhimpur Khiri","Lalitpur","Lucknow","Mahamaya Nagar","Maharajganj","Mahoba","Mainpuri","Mathura","Mau","Meerut","Mirzapur","Moradabad","Muzaffarnagar","Noida","Pilibhit","Pratapgarh","Raebareli","Rampur","Saharanpur","Sant Kabir Nagar","Sant Ravidas Nagar","Shahjahanpur","Shamli","Shrawasti","Sidharth Nagar","Sitapur","Sonbhadra","Sultanpur","Unnao","Varanasi"],
+				             "Uttarakhand":["Almora","Chamoli","Dehradun","Haridwar","Kashipur","Kotdwar","Nainital","Pauri Garhwal","Pithoragarh","Roorkee","Udham Singh Nagar","Udhamsingh Nagar","Uttar Kashi"],
+				             "West Bengal":["Bankura","Bardhaman","Birbhum","Burdwan","Cooch Behar","Cooch behar","Dakshin Dinajpur","Darjeeling","East Midnapore","Hooghly","Howrah","Jalpaiguri","KolKata","Kolkata","Malda","Medinipur","Midnapore","Murshidabad","Nadia","North 24 Parganas","Purulia","Siliguri","South 24 Parganas","Uttar Dinajpur","West Midnapore"]};
+				             
+		   $('#states').append($("<option></option>").attr("value",'All').text('All States'));   
+		   $('#districts').append($("<option></option>").attr("value",'All').text('All Districts'));   
+		   $.each(states, function(index, val) {			     
+				 $('#states')
+					 .append($("<option></option>")
+					 .attr("value",val)
+					 .text(val)); 
+		   });
+		   function updateDistricts(state){
+			   $('#districts').find('option').remove();
+			   $('#districts').append($("<option></option>").attr("value",'All').text('All Districts'));
+			   $.each(districts, function(key, val) {
+				   if(state == key){	
+						$.each(val, function(index, dist) {			     
+						 $('#districts')
+							 .append($("<option></option>")
+							 .attr("value",dist)
+							 .text(dist)); 
+						});	
+				   }     
+			   });
+            }
+		    			  
+			function getResult(state, district, offset){
+				if(state != 'All' && district != 'All'){
+					var api_url = "https://data.gov.in/api/datastore/resource.json?resource_id=e16c75b6-7ee6-4ade-8e1f-2cd3043ff4c9&api-key=5f50a64949e68cf3fa3eadb5b1310d81&sort[h_name]=asc&filters[state]="+state+"&filters[district]="+district+"&offset="+offset;
+				}else if(state != 'All' && district == 'All'){
+					var api_url = "https://data.gov.in/api/datastore/resource.json?resource_id=e16c75b6-7ee6-4ade-8e1f-2cd3043ff4c9&api-key=5f50a64949e68cf3fa3eadb5b1310d81&sort[h_name]=asc&filters[state]="+state+"&offset="+offset;
+				}else{
+					var api_url = "https://data.gov.in/api/datastore/resource.json?resource_id=e16c75b6-7ee6-4ade-8e1f-2cd3043ff4c9&api-key=5f50a64949e68cf3fa3eadb5b1310d81&sort[h_name]=asc&offset="+offset;
+				}
+				if(offset == 0){
+					$("#blood-banks ul").remove();
+				}
+			  $.getJSON(api_url, function( data ) {						
+			  var items = [];
+			  $.each( data['records'], function( key, val ) {  
+                var	elements= "<address>";
+                if(val['h_name'] != "NA"){
+					 elements += "<strong>"+ val['h_name']+"</strong><br>";
+				}
+				if(val['blood_component'] != "NA"){
+					 elements += "Blood Component: "+ val['blood_component']+"<br>";
+				}
+				if(val['service_time'] != "NA"){
+					 elements += "Service Time: "+ val['service_time']+"<br>";
+				}
+				if(val['blood_group'] != "NA"){
+					 elements += "Blood Group: "+ val['blood_group']+"<br>";
+				}
+				if(val['category'] != "NA"){
+					 elements += "Category: "+ val['category']+"<br>";
+				}
+				if(val['address'] != "NA"){
+					 elements += val['address']+"<br>";
+				}
+				if(val['city'] != "NA"){
+					 elements += val['city']+"<br>";
+				}
+				if(val['district'] != "NA"){
+					 elements += val['district']+"<br>";
+				}
+				if(val['state'] != "NA"){
+					 elements += val['state']+"<br>";
+				}
+				if(val['pincode'] != "NA"){
+					 elements += val['pincode']+"<br>";
+				}
+				if(val['contact'] != "NA"){
+					 elements += "<abbr title='Phone'>P:</abbr> "+val['contact']+"<br>";
+				}
+				if(val['fax'] != "NA"){
+					 elements += "Fax: "+val['fax']+"<br>";
+				}
+				if(val['email'] != "NA"){
+					 elements += "Email: "+val['email']+"<br>";
+				}
+				if(val['helpline'] != "NA"){
+					 elements += "Helpline: "+val['helpline']+"<br>";
+				}
+				if(val['website'] != "NA"){
+					 elements += "Website: "+val['website']+"<br>";
+				}
+				if(val['latitude'] != "NA" && val['longitude'] != "NA"){
+					 elements += "Geolocation: <a href='https://www.google.com/maps/@"+val['latitude']+","+val['longitude']+",16z'>Link</a><br>";
+				}
+				elements += "</address>"	
+				items.push( "<li id='" + key + "'>" + elements + "</li><hr>" );
+			  });
+			 
+			  $( "<ul/>", {
+				"class": "my-new-list",
+				html: items.join( "" )
+			  }).appendTo( "#blood-banks" );
+			  $('#page').val(parseInt(offset)+1);	
+			  if(data['count'] < 100){
+				$('#more').hide();	
+			  }		  
+			});
+		    }
+		    getResult('All', 'All', 0);
+		    $('#more').on('click', function(){
+				getResult($('#states').val(), $('#districts').val(), $('#page').val());	
+			});
+			$('#states').on('change', function(){
+				updateDistricts(this.value);
+				getResult($('#states').val(), $('#districts').val(), 0)
+			});
+			
+			$('#districts').on('change', function(){
+				getResult($('#states').val(), $('#districts').val(), 0)
+			});
+		</script>
+	</body>
+</html>
